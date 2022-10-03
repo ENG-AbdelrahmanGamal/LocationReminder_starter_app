@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.firebase.ui.auth.AuthUI
@@ -32,12 +33,10 @@ class AuthenticationActivity : AppCompatActivity() {
         )//         TODO: Implement the create account and sign in using FirebaseUI, use sign in using email and sign in using Google
 
         binding.lifecycleOwner = this
-
         binding.btLogin.setOnClickListener {
             launchSignInFlow()
         }
 //          TODO: If the user was authenticedat, send him to RemindersActivity
-
 //          TODO: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
 
@@ -70,22 +69,20 @@ class AuthenticationActivity : AppCompatActivity() {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
                 // User successfully signed in
-                Log.i(TAG, "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
+                Log.i(TAG, "Successfully sign in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
+                Toast.makeText(this," Successfull",Toast.LENGTH_LONG).show()
+
                 gotoReminderActivity()
-                return
 
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
                 Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
-                return
+                Toast.makeText(this,"Sign in unsuccessful",Toast.LENGTH_LONG).show()
+
             }
         }
     }
 
     private fun gotoReminderActivity() {
-        TODO("Not yet implemented")
         val intent = Intent(this, RemindersActivity::class.java)
         startActivity(intent)
         finish()

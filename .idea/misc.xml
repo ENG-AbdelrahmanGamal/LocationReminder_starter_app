@@ -4,12 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/activity_authentication.xml" value="0.12" />
-        <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/activity_reminder_description.xml" value="0.136" />
+        <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/activity_reminder_description.xml" value="0.1" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/activity_reminders.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/fragment_reminders.xml" value="0.176" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/fragment_save_reminder.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/fragment_select_location.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/layout/it_reminder.xml" value="0.11574074074074074" />
+        <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/menu/main_menu.xml" value="0.1361111111111111" />
         <entry key="..\:/Users/I TECH/AndroidStudioProjects/LocationReminder_starter_app/app/src/main/res/menu/map_options.xml" value="0.25416666666666665" />
       </map>
     </option>

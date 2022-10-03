@@ -6,8 +6,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
 import java.util.concurrent.TimeUnit
 
-class GeoFenceUtil {
-}
+class GeoFenceUtil
+
 fun errorMessage(context: Context, errorCode: Int): String {
     val resources = context.resources
     return when (errorCode) {
