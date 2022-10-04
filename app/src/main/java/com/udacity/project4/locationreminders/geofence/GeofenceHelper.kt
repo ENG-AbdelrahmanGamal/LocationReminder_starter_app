@@ -1,4 +1,5 @@
 package com.udacity.project4.locationreminders.geofence
+
 import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
@@ -9,6 +10,7 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
+
 
 class GeofenceHelper(base: Context?) :
     ContextWrapper(base) {
