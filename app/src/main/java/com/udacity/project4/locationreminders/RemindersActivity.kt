@@ -125,11 +125,9 @@ private lateinit var binding:ActivityRemindersBinding
         {
             Snackbar.make(
                 //reminderLayout
-                findViewById(R.id.reminderLayout),
-                R.string.permission_denied_explanation,
+                findViewById(R.id.reminderLayout),R.string.permission_denied_explanation,
                 Snackbar.LENGTH_INDEFINITE
             )
-
                 .setAction(R.string.settings) {
                     startActivity(Intent().apply {
                         action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS

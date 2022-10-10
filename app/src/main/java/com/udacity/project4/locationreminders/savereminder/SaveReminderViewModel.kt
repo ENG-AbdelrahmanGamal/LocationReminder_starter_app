@@ -19,12 +19,12 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     BaseViewModel(app) {
 
 
-    val reminderTitle = MutableLiveData<String>()
-    val reminderDescription = MutableLiveData<String>()
-    val reminderSelectedLocationStr = MutableLiveData<String>()
-    val selectedPOI = MutableLiveData<PointOfInterest>()
-    val latitude = MutableLiveData<Double>()
-    val longitude = MutableLiveData<Double>()
+    val reminderTitle = MutableLiveData<String?>()
+    val reminderDescription = MutableLiveData<String?>()
+    val reminderSelectedLocationStr = MutableLiveData<String?>()
+    val selectedPOI = MutableLiveData<PointOfInterest?>()
+    val latitude = MutableLiveData<Double?>()
+    val longitude = MutableLiveData<Double?>()
     private val _navigateList = MutableLiveData<Boolean>()
     val navigateList : LiveData<Boolean>
         get() = _navigateList
@@ -98,12 +98,12 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
         return true
     }
+    fun geofenceIsActive() {_geofenceIndex.value == _hintIndex.value}
+
     fun updateHint(currentIndex: Int) {
         _hintIndex.value = currentIndex+1
     }
 
-    fun geofenceActivated() {
-        _geofenceIndex.value = _hintIndex.value
-    }
+    fun geofenceActivated() { _geofenceIndex.value = _hintIndex.value }
 
 }
