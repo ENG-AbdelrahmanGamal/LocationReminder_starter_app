@@ -98,10 +98,10 @@ class SaveReminderFragment : BaseFragment() {
 
         binding.saveReminder.setOnClickListener {
 
-            val latitude =   _viewModel.latitude.value
-            val longitude = _viewModel.longitude.value
-
-            generalLocation = LatLng(  latitude!!,longitude !!)
+//            val latitude =   _viewModel.latitude.value
+//            val longitude = _viewModel.longitude.value
+//
+//            generalLocation = LatLng(  latitude!!,longitude !!)
 
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request
@@ -121,7 +121,7 @@ class SaveReminderFragment : BaseFragment() {
 
             }
             requestForegroundAndBackgroundLocationPermissions(
-                LatLng(latitude!!, longitude!!),
+                LatLng(_viewModel.latitude.value!!, _viewModel.longitude.value!!),
                 geofencingClient
             )
        //     requestForegroundAndBackgroundLocationPermissions()

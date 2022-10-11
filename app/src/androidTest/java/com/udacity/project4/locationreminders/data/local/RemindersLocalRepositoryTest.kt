@@ -52,7 +52,7 @@ internal class RemindersLocalRepositoryTest {
 
     //there a few Reminders example insertion to the database, Get all the reminders from the database,  loaded data equal to  the expected values.
     @Test
-    fun insertThreeReminders_getAllThreeFromDatabase() = runBlocking {
+    fun insertThreeReminders_getAllRemendersFromDatabase() = runBlocking {
         // GIVEN - create 3 reminders content all  field for the Reminder Object to the database
         val reminder_1 = ReminderDTO("title1", "description1", "location1",
             (-360..360).random().toDouble(),
