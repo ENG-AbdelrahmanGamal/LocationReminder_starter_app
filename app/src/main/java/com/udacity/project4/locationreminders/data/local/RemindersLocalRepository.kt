@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
  * @param remindersDao the dao that does the Room db operations
  * @param ioDispatcher a coroutine dispatcher to offload the blocking IO tasks
  */
-class RemindersLocalRepository(
+class RemindersLocalRepository constructor(
     private val remindersDao: RemindersDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ReminderDataSource {

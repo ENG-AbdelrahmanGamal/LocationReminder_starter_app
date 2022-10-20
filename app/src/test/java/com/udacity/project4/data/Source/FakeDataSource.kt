@@ -18,14 +18,11 @@ class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()
         }
             reminders?.let { return@let Result.Success(it.toList()) }
             return Result.Success(emptyList<ReminderDTO>())
-
     }
     override suspend fun saveReminder(reminder: ReminderDTO) {
  //       TODO("Not yet implemented")
         reminders?.add(reminder)
-
     }
-
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
       //  TODO("Not yet implemented")
         if(_returnError) {
@@ -33,13 +30,10 @@ class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()
         }
         reminders?.firstOrNull { it.id == id }?.let { return Result.Success(it) }
         return Result.Error("Not Found The Reminder Have Id = $id")
-
-
     }
 
     override suspend fun deleteAllReminders() {
      //   TODO("Not yet implemented")
         reminders?.clear()
-
     }
 }

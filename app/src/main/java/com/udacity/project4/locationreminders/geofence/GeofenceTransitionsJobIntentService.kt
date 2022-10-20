@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
+import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
@@ -47,6 +48,17 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         val geofenceList: List<Geofence> =
             geofencingEvent.triggeringGeofences
         sendNotification(geofenceList)
+
+        if(geofencingEvent.hasError()){
+            val message = errorMessage(applicationContext,geofencingEvent.errorCode)
+            Log.d("error is : ",message)
+            return
+        }
+        //TODO call @sendNotification
+        if(geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
+            Log.d("successGeofenceEntered", applicationContext.getString(R.string.geofence_entered))
+            sendNotification(geofencingEvent.triggeringGeofences)
+        }
     }
 
     //TODO: get the request id of the current geofence
@@ -65,7 +77,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         }
 
         if(TextUtils.isEmpty(requestId)) return
-
         repository = get()
 
         //Get the local repository instance

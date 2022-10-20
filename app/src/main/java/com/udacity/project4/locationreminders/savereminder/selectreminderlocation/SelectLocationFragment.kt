@@ -91,8 +91,15 @@ class SelectLocationFragment : BaseFragment() ,OnMapReadyCallback{
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        setpoiclick(map)
+        setPoiClick(map)
         enableMyLocatin()
+        // marker to location when user select
+        setPoiClick(map)
+        // create a style to map
+        mapStyle(map)
+
+        setMapLongClick(map)
+
 
     }
 
@@ -107,17 +114,17 @@ class SelectLocationFragment : BaseFragment() ,OnMapReadyCallback{
         _viewModel.navigationCommand.postValue(NavigationCommand.Back)
     }
 
-//        private fun mapStyle(map: GoogleMap) {
-//        try {
-//            val success =
-//                map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.map_style))
-//            if (!success)
-//                Log.d(TAG, "setMApStyle: style parsing failed")
-//        } catch (e: Resources.NotFoundException) {
-//            Log.d(TAG, "setMApStyle: can't find style . Error  ", e)
-//
-//        }
-//    }
+        private fun mapStyle(map: GoogleMap) {
+        try {
+            val success =
+                map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.map_style))
+            if (!success)
+                Log.d(TAG, "Done")
+        } catch (e: Resources.NotFoundException) {
+            Log.d(TAG, " error is  ", e)
+
+        }
+    }
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireActivity(),
@@ -125,6 +132,7 @@ class SelectLocationFragment : BaseFragment() ,OnMapReadyCallback{
         ) == PackageManager.PERMISSION_GRANTED
 
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
@@ -151,30 +159,44 @@ class SelectLocationFragment : BaseFragment() ,OnMapReadyCallback{
         else -> super.onOptionsItemSelected(item)
 
     }
+    private fun setPoiClick(map: GoogleMap) {
+        map.setOnPoiClickListener { poi ->
+            val poiMarker = map.addMarker(
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(poi.name)
+            )
+            poiMarker.showInfoWindow()
+            val zoomLevel = 15f
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(poi.latLng, zoomLevel))
+            Point = poi
+            latitude= poi.latLng.latitude
+            longitude = poi.latLng.longitude
+            title = poi.name
+        }
+        isLocationSelected=true
+    }
     private fun setMapLongClick(map: GoogleMap) {
-        map.setOnPoiClickListener {
+        map.setOnPoiClickListener {it->
+            val snippet = String.format(
+                Locale.getDefault(), "${it.latLng.latitude},${it.latLng.longitude}",
+                it.latLng.latitude, it.latLng.longitude
+            )
+            map.addMarker(MarkerOptions().position(it.latLng).title(it.name)
+                .snippet(snippet))
             val pointMarker =map.addMarker(
                 MarkerOptions().position(it.latLng).title(it.name)
             )
-            val zoomLevel = 17f
+          pointMarker.showInfoWindow()
+
+            val zoomLevel = 15f
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLng, zoomLevel))
-            pointMarker.showInfoWindow()
             Point = it
             latitude= it.latLng.latitude
             longitude = it.latLng.longitude
             title = it.name
 
-
-            map.addMarker(MarkerOptions().position(it.latLng).title(it.name))
-            pointMarker.showInfoWindow()
         }
-    }
-
-
-    private fun setpoiclick(map: GoogleMap) {
-        setMapLongClick(map)
-        isLocationSelected=true
-
     }
 private fun enableMyLocatin() {
     if (isPermissionGranted())
@@ -235,9 +257,31 @@ private fun enableMyLocatin() {
                 )
             }
         }
-    } private fun checkDeviceLocationSettings(resolve: Boolean = true) {
+    }
+    private fun checkDeviceLocationSettings(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
+        }
+        val requestBuilder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val settingsClient = LocationServices.getSettingsClient(requireActivity()!!)
+        val locationSettingsResponseTask =
+            settingsClient.checkLocationSettings(requestBuilder.build())
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException && resolve) {
+                try {
+                    exception.startResolutionForResult(
+                        requireActivity()!!, REQUEST_TURN_DEVICE_LOCATION_ON
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
+                }
+            } else {
+                Snackbar.make(requireView(), R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+                ).setAction(android.R.string.ok) {
+                    checkDeviceLocationSettings()
+                }.show()
+            }
+
         }
 
 }
