@@ -3,6 +3,7 @@ package com.udacity.project4.data.Source
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import kotlinx.coroutines.withContext
 
 
 class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()):ReminderDataSource{
@@ -11,13 +12,25 @@ class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()
         _returnError = result
 
     }
+    /**
+     * Get the reminders list from the local db
+     * @return Result the holds a Success with all the reminders or an Error object with the error message
+     */
+
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
         //   TODO("Not yet implemented"
+
+        // make datasource return error even if it's not empty to test error.
         if (_returnError) {
-            return Result.Error("There is Exception Error" )
+            return Result.Error("There is Exception Error!")
         }
-            reminders?.let { return@let Result.Success(it.toList()) }
-            return Result.Success(emptyList<ReminderDTO>())
+
+        // when no reminders are found, returns >>> an empty list and the data source >>> returns Result.success
+        if (reminders?.isEmpty()!!) {
+            return Result.Success(reminders!!)
+        } else {
+            return Result.Success(reminders!!)
+        }
     }
     override suspend fun saveReminder(reminder: ReminderDTO) {
  //       TODO("Not yet implemented")

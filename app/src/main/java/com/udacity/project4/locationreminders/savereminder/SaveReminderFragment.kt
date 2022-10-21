@@ -110,8 +110,7 @@ class SaveReminderFragment : BaseFragment() {
                 longitude == null
             ) {
                 Snackbar.make(
-                    binding.root,
-                    "please select title and description",
+                    binding.root, R.string.err_select_location,
                     Snackbar.LENGTH_SHORT
                 )
                     .show()

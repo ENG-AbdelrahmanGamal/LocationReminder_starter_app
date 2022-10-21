@@ -32,6 +32,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.EspressoIdlingResource
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -63,8 +64,8 @@ class RemenderActivityTest : AutoCloseKoinTest() {
     // before moving to the next command
     @Before
     fun registerIdlingResourse(){
-    IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-            IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
 
     }
     @After
@@ -98,7 +99,7 @@ class RemenderActivityTest : AutoCloseKoinTest() {
             modules(listOf(myModule))
         }
         //Get repository
-       repository = get()
+        repository = get()
 
         //clear all data
         runBlocking {
@@ -136,7 +137,7 @@ class RemenderActivityTest : AutoCloseKoinTest() {
 
 
         //THEN >>> expect value Snackbar display when add reminder
-        onView(withId(com.google.android.material.R.id.snackbar_text))
+        Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText(R.string.err_select_location)))
         activityScenario.close()
 
@@ -163,30 +164,6 @@ class RemenderActivityTest : AutoCloseKoinTest() {
         activityScenario.close()
     }
 
-    @ExperimentalCoroutinesApi
-    @Test
-    fun saveLocation_showToast() = runBlocking {
-        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
-        onView(withId(R.id.addReminderFAB)).perform(click())
-        onView(withId(R.id.reminderTitle)).perform(replaceText("Test Title "))
-        onView(withId(R.id.reminderDescription)).perform(replaceText("Test Description "))
-        onView(withId(R.id.selectLocation)).perform(click())
-        onView(withId(R.id.google_map)).perform(longClick())
-        onView(withId(R.id.save_current_Location)).perform(click())
-        onView(withId(R.id.saveReminder)).perform(click())
-        onView(withText(R.string.reminder_saved))
-            .inRoot(RootMatchers.withDecorView(not(`is`(getActivity(activityScenario)!!.window.decorView)))
-            ).check(matches(isDisplayed()))
-        activityScenario.close()
-
-    }
-    private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>?): Activity? {
-        var activity: Activity? = null
-        activityScenario?.onActivity {
-            activity = it
-        }
-        return activity
-    }
 
 }   fun <T : Activity> ActivityScenario<T>.getToolbarNavigationContentDescription()
         : String {

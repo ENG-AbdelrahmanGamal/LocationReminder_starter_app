@@ -88,25 +88,25 @@ private lateinit var binding:ActivityRemindersBinding
     }
 
 
-    @TargetApi(29 )
-    private fun requestForegroundAndBackgroundLocationPermissions() {
-        if (foregroundAndBackgroundLocationPermissionApproved())
-            return
-        var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        val resultCode = when {
-            runningQOrLater -> {
-                permissionsArray += Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
-            }
-            else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-        }
-        Log.d(TAG, "Request foreground only location permission")
-        ActivityCompat.requestPermissions(
-            this,
-            permissionsArray,
-            resultCode
-        )
-    }
+//    @TargetApi(29 )
+//    private fun requestForegroundAndBackgroundLocationPermissions() {
+//        if (foregroundAndBackgroundLocationPermissionApproved())
+//            return
+//        var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//        val resultCode = when {
+//            runningQOrLater -> {
+//                permissionsArray += Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//                REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
+//            }
+//            else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
+//        }
+//        Log.d(TAG, "Request foreground only location permission")
+//        ActivityCompat.requestPermissions(
+//            this,
+//            permissionsArray,
+//            resultCode
+//        )
+//    }
 
 
     override fun onRequestPermissionsResult(
