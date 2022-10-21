@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
@@ -61,9 +62,13 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
     }
 
-    /**
-     * Save the reminder to the data source
-     */
+    fun onLocationSelected(selectedLocation: LatLng, selectedLocationDescription: String?) {
+        latitude.value = selectedLocation.latitude
+        longitude.value = selectedLocation.longitude
+        reminderSelectedLocationStr.value = selectedLocationDescription
+       navigationCommand.value = NavigationCommand.Back
+    }
+
     fun saveReminder(reminderData: ReminderDataItem) {
         showLoading.value = true
         viewModelScope.launch {

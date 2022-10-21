@@ -162,8 +162,7 @@ class SaveReminderFragment : BaseFragment() {
             .addGeofence(geofence)
             .build()
 
-
-        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+        geofencingClient.addGeofences(geofenceRequest!!, geofencePendingIntent)?.run {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofenceRequest, geofencePendingIntent)?.run {
                     addOnSuccessListener {
