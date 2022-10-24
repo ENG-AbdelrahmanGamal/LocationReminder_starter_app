@@ -38,12 +38,12 @@ class AuthenticationActivity : AppCompatActivity() {
         binding.btLogin.setOnClickListener {
             launchSignInFlow()
         }
-//        //
-//        if(firebaseAuth.currentUser!=null)
-//        {
-//            gotoReminderActivity()
-//            return
-//        }
+        //
+        if(firebaseAuth.currentUser!=null)
+        {
+            gotoReminderActivity()
+            return
+        }
 ////          TODO: If the user was authenticedat, send him to RemindersActivity
 //          TODO: a bonus is to customize the sign in flow to look nice using :
 

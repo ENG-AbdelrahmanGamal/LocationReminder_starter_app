@@ -20,11 +20,10 @@ import org.koin.android.ext.android.inject
 import kotlin.coroutines.CoroutineContext
 
 class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
-    private  val TAG = "GeofenceTransitionsJobI"
     private var coroutineJob: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + coroutineJob
-    private lateinit var repository: ReminderDataSource
+
 
     companion object {
         private const val JOB_ID = 573
@@ -45,9 +44,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         //TODO call @sendNotification
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
-        val geofenceList: List<Geofence> =
-            geofencingEvent.triggeringGeofences
-        sendNotification(geofenceList)
+
 
         if(geofencingEvent.hasError()){
             val message = errorMessage(applicationContext,geofencingEvent.errorCode)
@@ -56,48 +53,36 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         }
         //TODO call @sendNotification
         if(geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            Log.d("successGeofenceEntered", applicationContext.getString(R.string.geofence_entered))
+            Log.d("success", applicationContext.getString(R.string.geofence_entered))
             sendNotification(geofencingEvent.triggeringGeofences)
         }
     }
 
     //TODO: get the request id of the current geofence
     private fun sendNotification(triggeringGeofences: List<Geofence>) {
-        val requestId =  when {
-            triggeringGeofences.isNotEmpty() ->
-            {
-                Log.d(TAG, "sendNotification: " + triggeringGeofences[0].requestId)
-                triggeringGeofences[0].requestId
-            }
 
-            else -> {
-                Log.e(TAG, "No Geofence Trigger Found !")
-                return
-            }
-        }
+        triggeringGeofences.forEach {
+            val requestId = it.requestId
 
-        if(TextUtils.isEmpty(requestId)) return
-        repository = get()
-
-        //Get the local repository instance
-        val remindersLocalRepository: ReminderDataSource by inject()
-//        Interaction to the repository has to be through a coroutine scope
-        CoroutineScope(coroutineContext).launch(SupervisorJob()) {
-            //get the reminder with the request id
-            val result = remindersLocalRepository.getReminder(requestId)
-            if (result is Result.Success<ReminderDTO>) {
-                val reminderDTO = result.data
-                //send a notification to the user with the reminder details
-                sendNotification(
-                    this@GeofenceTransitionsJobIntentService, ReminderDataItem(
-                        reminderDTO.title,
-                        reminderDTO.description,
-                        reminderDTO.location,
-                        reminderDTO.latitude,
-                        reminderDTO.longitude,
-                        reminderDTO.id
+            val remindersRepository: ReminderDataSource by inject()
+            //Interaction to the repository has to be through a coroutine scope
+            CoroutineScope(coroutineContext).launch(SupervisorJob()) {
+                //get the reminder with the request id
+                val result = remindersRepository.getReminder(requestId)
+                if (result is Result.Success<ReminderDTO>) {
+                    val reminderDTO = result.data
+                    //send a notification to the user with the reminder details
+                    sendNotification(
+                        this@GeofenceTransitionsJobIntentService, ReminderDataItem(
+                            reminderDTO.title,
+                            reminderDTO.description,
+                            reminderDTO.location,
+                            reminderDTO.latitude,
+                            reminderDTO.longitude,
+                            reminderDTO.id
+                        )
                     )
-                )
+                }
             }
         }
     }

@@ -33,6 +33,7 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
+import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver.Companion.ACTION_GEOFENCE_EVENT
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
@@ -41,12 +42,10 @@ private const val LOCATION_PERMISSION_INDEX = 0
 private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
 private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
 private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
+
+
 class SaveReminderFragment : BaseFragment() {
-    companion object {
-        internal const val ACTION_GEOFENCE_EVENT =
-            "GeofenceBroadcastReceiver.project4.action.ACTION_GEOFENCE_EVENT"
-    }
-    override val _viewModel: SaveReminderViewModel by inject()
+  override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
     private val runningQOrLater = Build.VERSION.SDK_INT >=
             Build.VERSION_CODES.Q

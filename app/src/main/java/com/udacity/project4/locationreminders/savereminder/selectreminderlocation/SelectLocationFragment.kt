@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -50,6 +51,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private  val TAG = "SelectLocationFragment"
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var map: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private var selectedLocation: LatLng = LatLng(33.00, 15.00)
     private var selected_Location_Description: String? = null
     private lateinit var binding: FragmentSelectLocationBinding
@@ -59,6 +62,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
@@ -80,7 +84,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
         setMapStyle(map)
         setMapLongClick(map)
         setPoiClick(map)
@@ -152,6 +155,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
+            getMyLocation()
+
             map.isMyLocationEnabled = true
             Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
         } else {
@@ -161,6 +166,52 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+        }
+    }
+
+    private fun getMyLocation() {
+      //  TODO("Not yet implemented")
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location.let {
+                        if (it != null) {
+                            val userLocation = LatLng(it.latitude, it.longitude)
+                            val snippet = String.format(
+                                Locale.getDefault(),
+                                "Lat: %1$.5f, Long: %2$.5f",
+                                it.latitude,
+                                it.longitude
+                            )
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                            map.addMarker(
+                                MarkerOptions().position(userLocation).title("Your Location")
+                                    .snippet(snippet)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            )
+                        } else {
+                            getMyLocation()
+                        }
+
+                    }
+
         }
     }
 
