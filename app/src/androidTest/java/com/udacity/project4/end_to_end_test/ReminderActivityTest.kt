@@ -1,4 +1,5 @@
 package com.udacity.project4.end_to_end_test
+
 import android.app.Activity
 import android.app.Application
 import android.view.Display
@@ -52,7 +53,6 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.koin.test.get
-import java.util.regex.Matcher
 
 
 @RunWith(AndroidJUnit4::class)
@@ -64,8 +64,8 @@ class RemenderActivityTest : KoinTest {
     private lateinit var appContext: Application
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
-    @get:Rule
-    val activityRule = ActivityTestRule(RemindersActivity::class.java)
+//    @get:Rule
+//    val activityRule = ActivityTestRule(RemindersActivity::class.java)
 
     //by registering these two resources when either of these
     // two resources is busy, esspresso will wait until they are idle
@@ -119,13 +119,6 @@ class RemenderActivityTest : KoinTest {
         }
     }
 
-    private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>): Activity? {
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
-        }
-        return activity
-    }
 
     @Test
     fun remindersScreen_gotoClickFloatingActionbar_navigateToSaveReminderScreen() = runBlocking {
@@ -164,46 +157,39 @@ class RemenderActivityTest : KoinTest {
 
     }
 
+
     @ExperimentalCoroutinesApi
     @Test
     fun saveLocation_showToast() = runBlocking {
-        //display reminder screen
+        // GIVEN - Launch reminder activity
         val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        // click on the floating_action_button  to add reminder, write a test text in title and description
-        onView(withId(R.id.noDataTextView)).perform(click())
+        //WHEN - click on btn then enter details of reminder
         onView(withId(R.id.addReminderFAB)).perform(click())
-        onView(withId(R.id.reminderTitle)).perform(typeText("Title"), closeSoftKeyboard())
-        onView(withId(R.id.reminderDescription)).perform(
-            typeText("Description"),
-            closeSoftKeyboard()
-        )
-
-
-        // click on the select_location to navigate map fragment to select location
+        onView(withId(R.id.reminderTitle)).perform(typeText("TITLE1"), closeSoftKeyboard())
+        onView(withId(R.id.reminderDescription)).perform(typeText("DESC1"), closeSoftKeyboard())
+        // click on location then save btn without click on map
         onView(withId(R.id.selectLocation)).perform(click())
-        onView(withId(R.id.google_map)).perform(click())
         onView(withId(R.id.save_current_Location)).perform(click())
 
-        // click on the save_reminder and saveReminder button
-        onView(withId(R.id.saveReminder)).perform(click())
-
-        // Fail on api greater than 29
-        onView(withText(R.string.reminder_saved)).inRoot(
-            withDecorView(
-                Matchers.not(
-                    `is`(
-                        getActivity(activityScenario)?.window?.decorView
-                    )
-                )
-            )
-        )
+        //THEN - we expect that Toast will appear when click on save btn location
+        onView(withText(R.string.select_poi)).
+        inRoot(withDecorView(not(`is`(getActivity(activityScenario)?.window?.decorView))))
             .check(matches(isDisplayed()))
         activityScenario.close()
 
-
     }
+
+    private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>): Activity? {
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+        return activity
+    }
+
 
 
     @Test

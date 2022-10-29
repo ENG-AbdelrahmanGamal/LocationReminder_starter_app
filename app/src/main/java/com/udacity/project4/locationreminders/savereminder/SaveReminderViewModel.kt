@@ -1,10 +1,9 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
+
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
@@ -13,8 +12,6 @@ import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.launch
-private const val HINT_INDEX_KEY = "hintIndex"
-private const val GEOFENCE_INDEX_KEY = "geofenceIndex"
 class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
     BaseViewModel(app) {
 
@@ -26,10 +23,6 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     val latitude = MutableLiveData<Double?>()
     val longitude = MutableLiveData<Double?>()
     private val _navigateList = MutableLiveData<Boolean>()
-    var state: SavedStateHandle = SavedStateHandle()
-    private val _geofenceIndex = state.getLiveData(GEOFENCE_INDEX_KEY, -1)
-    private val _hintIndex = state.getLiveData(HINT_INDEX_KEY, 0)
-
 
     init { navigateList()    }
 
@@ -57,12 +50,6 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
     }
 
-    fun onLocationSelected(selectedLocation: LatLng, selectedLocationDescription: String?) {
-        latitude.value = selectedLocation.latitude
-        longitude.value = selectedLocation.longitude
-        reminderSelectedLocationStr.value = selectedLocationDescription
-       navigationCommand.value = NavigationCommand.Back
-    }
 
     fun saveReminder(reminderData: ReminderDataItem) {
         showLoading.value = true
@@ -80,6 +67,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
             showLoading.value = false
             showToast.value = app.getString(R.string.reminder_saved)
             navigationCommand.value = NavigationCommand.BackTo(R.id.reminderListFragment)
+
         }
     }
 

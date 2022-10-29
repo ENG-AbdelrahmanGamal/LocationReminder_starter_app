@@ -25,9 +25,10 @@ class AuthenticationActivity : AppCompatActivity() {
     companion object {
         const val SIGN_IN_REQUEST_CODE = 1001
     }
-//private lateinit var viewModel: AuthenticationViewModel
-    private lateinit var binding:ActivityAuthenticationBinding
-    private  val TAG = "AuthenticationActivity"
+
+    //private lateinit var viewModel: AuthenticationViewModel
+    private lateinit var binding: ActivityAuthenticationBinding
+    private val TAG = "AuthenticationActivity"
     val firebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,18 +39,17 @@ class AuthenticationActivity : AppCompatActivity() {
         binding.btLogin.setOnClickListener {
             launchSignInFlow()
         }
-        //
-        if(firebaseAuth.currentUser!=null)
-        {
-            gotoReminderActivity()
-            return
-        }
-////          TODO: If the user was authenticedat, send him to RemindersActivity
-//          TODO: a bonus is to customize the sign in flow to look nice using :
 
-        //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
+//        if (firebaseAuth.currentUser != null) {
+//            gotoReminderActivity()
+//            return
+//        }
+//        TODO: If the user was authenticedat, send him to RemindersActivity
+//          TODO: a bonus is to customize the sign in flow to look nice using :
+//https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
 
     }
+
     private fun launchSignInFlow() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
@@ -64,7 +64,7 @@ class AuthenticationActivity : AppCompatActivity() {
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                .build(),AuthenticationActivity.SIGN_IN_REQUEST_CODE
+                .build(), AuthenticationActivity.SIGN_IN_REQUEST_CODE
         )
     }
 
@@ -76,22 +76,27 @@ class AuthenticationActivity : AppCompatActivity() {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
                 // User successfully signed in
-                Log.i(TAG, "Successfully sign in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
-                Toast.makeText(this," Successfull",Toast.LENGTH_LONG).show()
+                Log.i(
+                    TAG,
+                    "Successfully sign in user ${FirebaseAuth.getInstance().currentUser?.displayName}!"
+                )
+                Toast.makeText(this, " Successfull", Toast.LENGTH_LONG).show()
 
                 gotoReminderActivity()
 
             } else {
                 Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
-                Toast.makeText(this,"Sign in unsuccessful",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Sign in unsuccessful", Toast.LENGTH_LONG).show()
             }
         }
     }
-    private fun checkDeviceLocationSettingsAndStartGeofence(resolve:Boolean = true) {
+
+    private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
     }
+
     private fun gotoReminderActivity() {
         val intent = Intent(this, RemindersActivity::class.java)
         startActivity(intent)

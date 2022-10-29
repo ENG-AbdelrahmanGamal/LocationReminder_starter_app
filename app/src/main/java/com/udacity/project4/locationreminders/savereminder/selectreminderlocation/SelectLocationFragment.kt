@@ -24,6 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
+import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
@@ -42,6 +43,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var selectedLocation: LatLng = LatLng(33.00, 15.00)
     private var selected_Location_Description: String? = null
     private lateinit var binding: FragmentSelectLocationBinding
+    private var mPoi: PointOfInterest? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -61,8 +63,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         binding.saveCurrentLocation.setOnClickListener {
-            _viewModel.onLocationSelected(selectedLocation,selected_Location_Description)
-
+            onLocationSelected()
         }
 
         return binding.root
@@ -204,6 +205,29 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    private fun onLocationSelected() {
+        //when User choose from POI
+        if ( mPoi!= null || !mPoi?.name.isNullOrEmpty()) {
+            _viewModel.selectedPOI.value= mPoi
+            _viewModel.reminderSelectedLocationStr.value = mPoi!!.name
+            _viewModel.latitude.value = mPoi!!.latLng.latitude
+            _viewModel.longitude.value = mPoi!!.latLng.longitude
+            Log.d("test","selectedPOI = ${_viewModel.selectedPOI.value!!.name}")
+
+            _viewModel.navigationCommand.value = NavigationCommand.Back
+            //when User choose from any area from Map
+        }else if(selected_Location_Description != null){
+            _viewModel.reminderSelectedLocationStr.value = selected_Location_Description
+            _viewModel.latitude.value = this.selectedLocation.latitude
+            _viewModel.longitude.value = this.selectedLocation.longitude
+            _viewModel.navigationCommand.value = NavigationCommand.Back
+
+        } else {
+            //display toast to user when not select anyLocation
+            Toast.makeText(requireContext(), getString(R.string.select_poi), Toast.LENGTH_LONG)
+                .show()
+        }
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -254,4 +278,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
         else -> super.onOptionsItemSelected(item)
     }
+
+
 }
