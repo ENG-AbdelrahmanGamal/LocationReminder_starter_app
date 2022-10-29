@@ -1,7 +1,6 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -27,13 +26,9 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     val latitude = MutableLiveData<Double?>()
     val longitude = MutableLiveData<Double?>()
     private val _navigateList = MutableLiveData<Boolean>()
-    val navigateList : LiveData<Boolean>
-        get() = _navigateList
     var state: SavedStateHandle = SavedStateHandle()
     private val _geofenceIndex = state.getLiveData(GEOFENCE_INDEX_KEY, -1)
     private val _hintIndex = state.getLiveData(HINT_INDEX_KEY, 0)
-    val geofenceIndex: LiveData<Int>
-        get() = _geofenceIndex
 
 
     init { navigateList()    }
@@ -84,7 +79,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
             )
             showLoading.value = false
             showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.Back
+            navigationCommand.value = NavigationCommand.BackTo(R.id.reminderListFragment)
         }
     }
 
@@ -103,12 +98,6 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
         return true
     }
-    fun geofenceIsActive() {_geofenceIndex.value == _hintIndex.value}
 
-    fun updateHint(currentIndex: Int) {
-        _hintIndex.value = currentIndex+1
-    }
-
-    fun geofenceActivated() { _geofenceIndex.value = _hintIndex.value }
 
 }

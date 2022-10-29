@@ -3,17 +3,11 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.app.Activity
-import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -22,28 +16,20 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.fragment.findNavController
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
-import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
-import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import java.util.*
 
-private const val REQUEST_CODE_BACKGROUND = 102929
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 12433
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -76,11 +62,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         binding.saveCurrentLocation.setOnClickListener {
             _viewModel.onLocationSelected(selectedLocation,selected_Location_Description)
+
         }
 
         return binding.root
     }
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -160,18 +146,21 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             map.isMyLocationEnabled = true
             Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
         } else {
+
             requestPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+            Toast.makeText(requireContext(), R.string.permission_denied_explanation,
+                Toast.LENGTH_SHORT).show()
+
         }
     }
 
     private fun getMyLocation() {
       //  TODO("Not yet implemented")
-
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -215,6 +204,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.Q)
     val requestPermissionLauncher =
         registerForActivityResult(
@@ -231,8 +222,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 else -> {
                     Log.i("Permission: ", "Denied")
                     Toast.makeText(
-                        context,
-                        "Location permission was not granted.",
+                        context,"Location permission was not granted.",
                         Toast.LENGTH_LONG
                     ).show()
                 }

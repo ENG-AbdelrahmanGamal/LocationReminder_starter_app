@@ -51,5 +51,7 @@
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
     <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
     <string name="google_maps_key">GOOGLE_MAPS_API_KEY</string>
+    <string name="apoint_interest_poi_on_the_map_to_create_a_reminder">please select a point of interest POI on the map to create a reminder.</string>
+    <string name="please_select_a_point_of_interest_poi_on_the_map_to_create_a_reminder">please select a point of interest (POI) on the map to create a reminder.</string>
     <string name="ferry_building_hint">Go to a market with an amazing assortment of delicious foods. It is a San Francisco classic!</string>
 </resources>

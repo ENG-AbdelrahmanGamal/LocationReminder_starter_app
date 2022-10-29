@@ -1,8 +1,8 @@
 package com.udacity.project4.end_to_end_test
-
 import android.app.Activity
 import android.app.Application
 import android.view.Display
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -37,57 +37,68 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matchers
+import org.hamcrest.core.Is
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.KoinTest
 import org.koin.test.get
+import java.util.regex.Matcher
 
 
 @RunWith(AndroidJUnit4::class)
 //marked Large Test because this is end to end test
 // test so much of our app they're consider large tests
 @LargeTest
-class RemenderActivityTest : AutoCloseKoinTest() {
+class RemenderActivityTest : KoinTest {
     private lateinit var repository: ReminderDataSource
     private lateinit var appContext: Application
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
+    @get:Rule
+    val activityRule = ActivityTestRule(RemindersActivity::class.java)
 
     //by registering these two resources when either of these
     // two resources is busy, esspresso will wait until they are idle
     // before moving to the next command
     @Before
-    fun registerIdlingResourse(){
+    fun registerIdlingResourse() {
         IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
 
     }
+
     @After
-    fun  unRegisterIdlingResourse(){
+    fun unRegisterIdlingResourse() {
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
 
     }
+
     @Before
     fun init() {
-        stopKoin() //stop the original app koin
+        //stop the original app koin
+        stopKoin()
         appContext = ApplicationProvider.getApplicationContext()
         val myModule = module {
             viewModel {
                 RemindersListViewModel(
-                    appContext,
+                    get(),
                     get() as ReminderDataSource
                 )
             }
             single {
                 SaveReminderViewModel(
-                    appContext,
+                    get(),
                     get() as ReminderDataSource
                 )
             }
@@ -96,6 +107,7 @@ class RemenderActivityTest : AutoCloseKoinTest() {
         }
         //initialize a new koin module
         startKoin {
+            androidContext(appContext)
             modules(listOf(myModule))
         }
         //Get repository
@@ -106,6 +118,15 @@ class RemenderActivityTest : AutoCloseKoinTest() {
             repository.deleteAllReminders()
         }
     }
+
+    private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>): Activity? {
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+        return activity
+    }
+
     @Test
     fun remindersScreen_gotoClickFloatingActionbar_navigateToSaveReminderScreen() = runBlocking {
         // start the reminders screen
@@ -142,10 +163,55 @@ class RemenderActivityTest : AutoCloseKoinTest() {
         activityScenario.close()
 
     }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun saveLocation_showToast() = runBlocking {
+        //display reminder screen
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        // click on the floating_action_button  to add reminder, write a test text in title and description
+        onView(withId(R.id.noDataTextView)).perform(click())
+        onView(withId(R.id.addReminderFAB)).perform(click())
+        onView(withId(R.id.reminderTitle)).perform(typeText("Title"), closeSoftKeyboard())
+        onView(withId(R.id.reminderDescription)).perform(
+            typeText("Description"),
+            closeSoftKeyboard()
+        )
+
+
+        // click on the select_location to navigate map fragment to select location
+        onView(withId(R.id.selectLocation)).perform(click())
+        onView(withId(R.id.google_map)).perform(click())
+        onView(withId(R.id.save_current_Location)).perform(click())
+
+        // click on the save_reminder and saveReminder button
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        // Fail on api greater than 29
+        onView(withText(R.string.reminder_saved)).inRoot(
+            withDecorView(
+                Matchers.not(
+                    `is`(
+                        getActivity(activityScenario)?.window?.decorView
+                    )
+                )
+            )
+        )
+            .check(matches(isDisplayed()))
+        activityScenario.close()
+
+
+    }
+
+
     @Test
     fun addreminderfragment_doubleUpfloatingActionBar() = runBlocking {
-        val task = ReminderDTO("title","description","location",
-            (-360..360).random().toDouble(),  (-360..360).random().toDouble(),"id")
+        val task = ReminderDTO(
+            "title", "description", "location",
+            (-360..360).random().toDouble(), (-360..360).random().toDouble(), "id"
+        )
         repository.saveReminder(task)
 
         // Start the Tasks screen.
@@ -164,13 +230,6 @@ class RemenderActivityTest : AutoCloseKoinTest() {
         activityScenario.close()
     }
 
-
-}   fun <T : Activity> ActivityScenario<T>.getToolbarNavigationContentDescription()
-        : String {
-    var description = ""
-    onActivity {
-        description =
-            it.findViewById<Toolbar>(R.id.radio).navigationContentDescription as String
-    }
-    return description
 }
+
+

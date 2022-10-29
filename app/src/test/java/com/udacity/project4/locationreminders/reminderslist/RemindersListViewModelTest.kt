@@ -68,6 +68,25 @@ internal class RemindersListViewModelTest{
         MatcherAssert.assertThat(reminderListViewModel.showNoData.getOrAwaitValue(), CoreMatchers.`is` (true))
     }
     @Test
+    fun loadReminders_DataSource_Error() {
+        runBlockingTest {
+            // GIVEN >> the DataSource return errors.
+            fakeDataSource.returnError(true)
+            test_save_new_Reminder()
+
+            // WHEN >>loading the reminders
+           reminderListViewModel.loadReminders()
+
+            // THEN >> Show error message
+            MatcherAssert.assertThat(
+                reminderListViewModel.showSnackBar.value,
+                CoreMatchers.`is`("There is Exception Error!")
+
+            )
+        }
+    }
+
+    @Test
     fun loadReminders_checkLoading()= mainCoroutineRule.runBlockingTest{
         // Pause dispatcher to verify initial values
         mainCoroutineRule.pauseDispatcher()
@@ -77,19 +96,29 @@ internal class RemindersListViewModelTest{
 
         //WHEN - load Reminders
         reminderListViewModel.loadReminders()
-        //THEN - loading indicator is shown
+        //THEN - loading indicator is display
         MatcherAssert.assertThat(
             reminderListViewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(true)
         )
         // Execute pending coroutines actions
         mainCoroutineRule.resumeDispatcher()
-        // THEN - loading indicator is hidden
+        // THEN - loading indicator is disappear
         MatcherAssert.assertThat(
             reminderListViewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(false)
         )
 
     }
+    private suspend fun test_save_new_Reminder() {
+        fakeDataSource.saveReminder(
+            ReminderDTO("title",
+                "description",
+                "location",
+                380.00,
+                350.00)
+        )
+    }
+
 
 }

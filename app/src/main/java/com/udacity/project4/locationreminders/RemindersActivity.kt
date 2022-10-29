@@ -33,7 +33,7 @@ import com.udacity.project4.databinding.ActivityRemindersBinding
  * The RemindersActivity that holds the reminders fragments
  */
 class RemindersActivity : AppCompatActivity() {
-private lateinit var binding:ActivityRemindersBinding
+    private lateinit var binding:ActivityRemindersBinding
     private  val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
     private  val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
     private  val REQUEST_TURN_DEVICE_LOCATION_ON = 29
@@ -46,12 +46,12 @@ private lateinit var binding:ActivityRemindersBinding
             android.os.Build.VERSION_CODES.Q
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    binding = DataBindingUtil.setContentView(this,R.layout.activity_reminders)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_reminders)
         val navController = this.findNavController(R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
-}
+    }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -61,31 +61,22 @@ private lateinit var binding:ActivityRemindersBinding
                 startActivity(intent)
                 return true
             }
+//            R.id.home->{
+//                val intent = Intent(this , RemindersActivity::class.java)
+//                startActivity(intent)
+//                return true
+//
+//            }
         }
         return super.onOptionsItemSelected(item)
     }
+
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment)
         return navController.navigateUp()
     }
 
-    @TargetApi(29)
-    private fun foregroundAndBackgroundLocationPermissionApproved(): Boolean {
-        val foregroundLocationApproved = (
-                PackageManager.PERMISSION_GRANTED ==
-                        ActivityCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION))
-        val backgroundPermissionApproved =
-            if (runningQOrLater) {
-                PackageManager.PERMISSION_GRANTED ==
-                        ActivityCompat.checkSelfPermission(
-                            this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                        )
-            } else {
-                true
-            }
-        return foregroundLocationApproved && backgroundPermissionApproved
-    }
 
 
 //    @TargetApi(29 )

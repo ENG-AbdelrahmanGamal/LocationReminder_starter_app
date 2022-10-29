@@ -24,6 +24,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderFragment
 class GeofenceBroadcastReceiver : BroadcastReceiver(){
 
 private  val TAG = "GeofenceBroadcastReceiv"
+    //user received notification when the user enters a Geofence
     override fun onReceive(context: Context, intent: Intent)
     {
 

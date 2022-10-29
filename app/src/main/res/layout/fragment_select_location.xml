@@ -15,21 +15,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--TODO: Add the map fragment for the user to select the location-->
-        <fragment
+
+<!--        <TextView-->
+<!--            android:id="@+id/toast"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="@dimen/margin_normal"-->
+<!--            android:layout_marginEnd="@dimen/margin_normal"-->
+<!--            android:background="@color/colorPrimary"-->
+<!--            android:gravity="center"-->
+<!--            android:padding="@dimen/padding_small"-->
+<!--            android:text="@string/please_select_a_point_of_interest_poi_on_the_map_to_create_a_reminder"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="@dimen/text_size_normal"-->
+<!--            android:textStyle="italic"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/google_map"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/google_map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/save_current_Location"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".Map" />
+
 
         <Button
             android:id="@+id/save_current_Location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="17dp"
             android:background="@color/colorAccent"
             android:text="Save"
             app:layout_constraintBottom_toBottomOf="parent"
