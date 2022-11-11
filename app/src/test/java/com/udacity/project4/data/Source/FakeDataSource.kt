@@ -3,7 +3,7 @@ package com.udacity.project4.data.Source
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
-
+// create fake data class to test the behavior of the code specific the view model.
 class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()):ReminderDataSource{
     private var _returnError = false
     fun returnError(result: Boolean){
@@ -23,7 +23,9 @@ class FakeDataSource (val reminders: MutableList<ReminderDTO>? = mutableListOf()
             return Result.Error("There is Exception Error!")
         }
 
-        // when no reminders are found, returns >>> an empty list and the data source >>> returns Result.success
+        // when no reminders are found, room will return empty list
+        // an empty list and the data source >>>
+        // i was missed returns Result.success and the method not doing well as required of it.
         if (reminders?.isEmpty()!!) {
             return Result.Success(reminders)
         } else {
