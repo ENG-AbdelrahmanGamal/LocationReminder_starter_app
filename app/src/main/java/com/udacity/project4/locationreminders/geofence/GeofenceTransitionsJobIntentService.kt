@@ -60,7 +60,8 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
     //TODO: get the request id of the current geofence
     private fun sendNotification(triggeringGeofences: List<Geofence>) {
-// use loop to enable return a list of Geofence
+// use loop to loop through all triggering Geofences
+// return a list of all Geofences that triggered this geofence transition alert.
         triggeringGeofences.forEach {
             val requestId = it.requestId
 
