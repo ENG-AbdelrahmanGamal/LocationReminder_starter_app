@@ -157,7 +157,10 @@ class RemenderActivityTest : KoinTest {
 
     }
 
-
+    // this method to test a Toast in the code, I had a problem
+    // because run code on emulator
+    // API greater than 30 in addition to i was use keyword matcher not matches and missed use keyword not
+    // i believe this was issue when I submitted the project and this method not passed this method
     @ExperimentalCoroutinesApi
     @Test
     fun saveLocation_showToast() = runBlocking {
@@ -166,15 +169,16 @@ class RemenderActivityTest : KoinTest {
 
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        //WHEN - click on btn then enter details of reminder
+        //WHEN - when click on button then enter details of reminder like title and description
         onView(withId(R.id.addReminderFAB)).perform(click())
         onView(withId(R.id.reminderTitle)).perform(typeText("TITLE1"), closeSoftKeyboard())
         onView(withId(R.id.reminderDescription)).perform(typeText("DESC1"), closeSoftKeyboard())
-        // click on location then save btn without click on map
+
+        // click on location then click on button save  without click on map to select any area
         onView(withId(R.id.selectLocation)).perform(click())
         onView(withId(R.id.save_current_Location)).perform(click())
 
-        //THEN - we expect that Toast will appear when click on save btn location
+        //THEN - we expect that Toast will appear after click on button  save location.
         onView(withText(R.string.select_poi)).
         inRoot(withDecorView(not(`is`(getActivity(activityScenario)?.window?.decorView))))
             .check(matches(isDisplayed()))
