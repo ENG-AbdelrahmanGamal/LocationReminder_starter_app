@@ -308,6 +308,11 @@ class SaveReminderFragment : BaseFragment() {
                 ).show()
             }
         }
+        /*delete geofencingClient.removeGeofences
+        even we allow not to remove existing reminders
+        before return to add second one
+        */
+
     }
 }
 

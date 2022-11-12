@@ -9,7 +9,10 @@
             name="reminderDataItem"
             type="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem" />
     </data>
-
+<!--  this activity displayed when user click on notification
+  we use three textview to display reminder details to user like  location ,title and
+  description about area was user selected it.
+  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

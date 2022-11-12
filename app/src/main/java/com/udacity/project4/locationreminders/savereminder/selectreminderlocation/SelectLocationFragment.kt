@@ -99,7 +99,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             selected_Location_Description = "random Location"
         }
     }
-
+//when user using POI on the map
     private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
             val poiMarker = map.addMarker(
@@ -112,7 +112,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             selected_Location_Description = poiMarker?.title
         }
     }
-
+/*I didn't use map stile in the previous submitted
+so i create stile map use JSON object similar at the lesson
+and call it on the map ready function
+  */
     private fun setMapStyle(map: GoogleMap) {
         try {
             // Customize the styling of the base map using a JSON object defined
@@ -142,6 +145,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
+            // Permissions are granted
             getMyLocation()
 
             map.isMyLocationEnabled = true
@@ -205,21 +209,30 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    /*
+    on save button pressed
+    this fun created until to enable user to zoom in when user  open map to choose
+    from  map if you need to select from POI or any random area from map
+
+    */
     private fun onLocationSelected() {
         //when User choose from POI
         if ( mPoi!= null || !mPoi?.name.isNullOrEmpty()) {
+            // send  the selected location details to view model.
             _viewModel.selectedPOI.value= mPoi
             _viewModel.reminderSelectedLocationStr.value = mPoi!!.name
             _viewModel.latitude.value = mPoi!!.latLng.latitude
             _viewModel.longitude.value = mPoi!!.latLng.longitude
             Log.d("test","selectedPOI = ${_viewModel.selectedPOI.value!!.name}")
-
+            // navigate back to add location fragment screen
             _viewModel.navigationCommand.value = NavigationCommand.Back
             //when User choose from any area from Map
+            // send back the selected location details to view model
         }else if(selected_Location_Description != null){
             _viewModel.reminderSelectedLocationStr.value = selected_Location_Description
             _viewModel.latitude.value = this.selectedLocation.latitude
             _viewModel.longitude.value = this.selectedLocation.longitude
+            // navigate back to add location fragment screen
             _viewModel.navigationCommand.value = NavigationCommand.Back
 
         } else {
