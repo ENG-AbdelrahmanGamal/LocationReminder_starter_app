@@ -39,11 +39,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private var selectedLocation: LatLng = LatLng(33.00, 15.00)
     private var selected_Location_Description: String? = null
     private lateinit var binding: FragmentSelectLocationBinding
     private var mPoi: PointOfInterest? = null
+    private val REQUEST_LOCATION_PERMISSION = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -112,6 +112,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             selected_Location_Description = poiMarker?.title
         }
     }
+
 /*I didn't use map stile in the previous submitted
 so i create stile map use JSON object similar at the lesson
 and call it on the map ready function
@@ -135,8 +136,7 @@ and call it on the map ready function
     }
 
     private fun isPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
+        return ContextCompat.checkSelfPermission(requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
@@ -147,11 +147,9 @@ and call it on the map ready function
         if (isPermissionGranted()) {
             // Permissions are granted
             getMyLocation()
-
-            map.isMyLocationEnabled = true
+            map.setMyLocationEnabled(true)
             Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
         } else {
-
             requestPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -206,6 +204,19 @@ and call it on the map ready function
 
                     }
 
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray) {
+        // Check if location permissions are granted and if so enable the
+        // location data layer.
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.size > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
+            }
         }
     }
 

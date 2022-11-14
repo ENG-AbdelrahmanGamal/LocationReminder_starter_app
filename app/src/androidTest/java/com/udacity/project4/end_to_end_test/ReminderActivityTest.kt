@@ -203,7 +203,6 @@ class RemenderActivityTest : KoinTest {
             (-360..360).random().toDouble(), (-360..360).random().toDouble(), "id"
         )
         repository.saveReminder(task)
-
         // Start the Tasks screen.
         val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -215,7 +214,6 @@ class RemenderActivityTest : KoinTest {
         // 3. Confirm that if we click Up button once, we end up back at the task details page.
 
         // 4. Confirm that if we click Up button a second time, we end up back at the home screen.
-
         // When using ActivityScenario.launch(), always call close().
         activityScenario.close()
     }
